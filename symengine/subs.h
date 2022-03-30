@@ -80,7 +80,7 @@ public:
     void bvisit(const Mul &x)
     {
         RCP<const Number> coef = one;
-        map_basic_basic d;
+        map_basic_basic d, d2;
         for (const auto &p : x.get_dict()) {
             RCP<const Basic> factor_old;
             if (eq(*p.second, *one)) {
@@ -106,14 +106,19 @@ public:
                 Mul::dict_add_term_new(outArg(coef), d, exp, t);
             }
         }
+        d2 = d;
+        std::cout << "asd" << *Mul::from_dict(coef, std::move(d2)) << std::endl;
+        
 
         // Replace the coefficient
         RCP<const Basic> factor = apply(x.get_coef());
         RCP<const Basic> exp, t;
         Mul::as_base_exp(factor, outArg(exp), outArg(t));
+        std::cout << "exp " << *exp << " t " << *t << std::endl;
         Mul::dict_add_term_new(outArg(coef), d, exp, t);
 
         result_ = Mul::from_dict(coef, std::move(d));
+        std::cout << *result_ << std::endl;
     }
 
     void bvisit(const Pow &x)
